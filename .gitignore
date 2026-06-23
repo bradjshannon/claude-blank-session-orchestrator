@@ -1,0 +1,4 @@
+# Runtime state and logs (live in ~/.claude/orchestrator, but ignore if copied here)
+state.json
+*.log
+worker.lock
