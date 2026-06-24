@@ -1,4 +1,4 @@
-#Requires -Version 7.0
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     One-step installer for the Claude blank-session orchestrator.
@@ -28,8 +28,8 @@ $ErrorActionPreference = 'Stop'
 function Test-Prerequisite {
     [CmdletBinding()]
     param()
-    if ($PSVersionTable.PSVersion.Major -lt 7) {
-        throw "PowerShell 7+ is required (found $($PSVersionTable.PSVersion))."
+    if ($PSVersionTable.PSVersion -lt [version]'5.1') {
+        throw "Windows PowerShell 5.1+ or PowerShell 7+ is required (found $($PSVersionTable.PSVersion))."
     }
     $claude = Get-Command -Name 'claude' -ErrorAction SilentlyContinue
     if (-not $claude) {

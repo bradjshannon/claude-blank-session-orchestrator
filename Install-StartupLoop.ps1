@@ -1,4 +1,4 @@
-#Requires -Version 7.0
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     No-admin install: drop a hidden launcher shortcut in the user's Startup folder so

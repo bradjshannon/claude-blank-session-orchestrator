@@ -1,4 +1,4 @@
-#Requires -Version 7.0
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     No-admin alternative to the scheduled task: a long-lived loop that runs the

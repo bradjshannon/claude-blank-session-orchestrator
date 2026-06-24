@@ -1,4 +1,4 @@
-#Requires -Version 7.0
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     Register (or remove) the scheduled task that keeps a blank Remote-Control

@@ -29,7 +29,7 @@ sessions are never disturbed.
 
 ## Requirements
 
-- Windows with **PowerShell 7+** (`pwsh`).
+- Windows with **PowerShell 5.1+** (the built-in `powershell`) or **PowerShell 7+** (`pwsh`). The auto-start prefers `pwsh` when present and falls back to `powershell`.
 - **Claude Code** installed with the `claude` CLI on `PATH`.
 - Signed in to a Claude account (Pro/Max/Team) — Remote Control needs the
   `user:sessions:claude_code` scope, not just an API key.

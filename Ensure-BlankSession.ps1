@@ -1,4 +1,4 @@
-#Requires -Version 7.0
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     Ensure at least one blank, Remote-Control-enabled Claude Code session is alive.
@@ -139,7 +139,7 @@ try {
                 $proc = Start-Process -FilePath $claude `
                     -ArgumentList @('--session-id', $uuid, '--remote-control', $name) `
                     -WorkingDirectory $WorkingDirectory `
-                    -WindowStyle Minimized `
+                    -WindowStyle Hidden `
                     -PassThru
                 $entry = [pscustomobject]@{
                     Uuid        = $uuid
