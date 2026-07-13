@@ -4,6 +4,20 @@ All notable changes to this project are documented here. Dates are UTC.
 
 ## [Unreleased]
 
+### Fixed
+
+- **MSIX-packaged Claude installs are now resolved.** When the Claude desktop app is
+  installed as an MSIX package, a process running *inside* the package container (Claude
+  Code itself) sees `claude-code` under `%APPDATA%\Claude`, but the orchestrator loop runs
+  *outside* the container (launched from the Startup folder) where that path does not
+  exist — the real tree lives in the package's virtualized roaming store at
+  `%LOCALAPPDATA%\Packages\<family>\LocalCache\Roaming\Claude\claude-code`.
+  `Resolve-ClaudeExe` now also searches the package-virtualized location (family name
+  wildcarded so a repackage does not break resolution), derives Roaming/Local from
+  `USERPROFILE` when `APPDATA`/`LOCALAPPDATA` are absent, and picks the newest build across
+  all roots. Previously the loop failed every cycle with "Could not locate the claude
+  executable" on packaged installs.
+
 ### Added
 
 - **Self-healing Startup shortcut.** On every cycle, `Run-OrchestratorLoop.ps1` rewrites

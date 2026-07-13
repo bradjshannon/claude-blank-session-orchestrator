@@ -42,15 +42,44 @@ function Resolve-ClaudeExe {
         throw "Specified ClaudePath not found: $Explicit"
     }
     $cmd = Get-Command -Name 'claude' -ErrorAction SilentlyContinue
-    if ($cmd) { return $cmd.Source }
-    # Fallback: newest bundled build under %APPDATA%\Claude\claude-code\<version>\claude.exe
-    $root = Join-Path $env:APPDATA 'Claude\claude-code'
-    if (Test-Path -LiteralPath $root) {
-        $exe = Get-ChildItem -Path $root -Recurse -Filter 'claude.exe' -ErrorAction SilentlyContinue |
-            Sort-Object LastWriteTime -Descending | Select-Object -First 1
-        if ($exe) { return $exe.FullName }
+    if ($cmd -and $cmd.Source -and (Test-Path -LiteralPath $cmd.Source)) { return $cmd.Source }
+    # Fallback: newest bundled build under a known install root. Two subtleties this handles:
+    #   1. Env vars are read defensively -- a hidden logon process can inherit an incomplete
+    #      environment, so Roaming/Local are also derived from USERPROFILE, not just APPDATA.
+    #   2. The Claude desktop app ships as an MSIX package. A process running INSIDE the
+    #      package container (Claude Code itself) sees claude-code at %APPDATA%\Claude, but a
+    #      process launched OUTSIDE it (this loop, started from the Startup folder) does not --
+    #      there the real tree lives in the package's virtualized roaming store at
+    #      %LOCALAPPDATA%\Packages\<family>\LocalCache\Roaming\Claude\claude-code. Search both;
+    #      the package family name is wildcarded so a repackage doesn't break resolution.
+    $roamBases  = @($env:APPDATA)
+    $localBases = @($env:LOCALAPPDATA)
+    if ($env:USERPROFILE) {
+        $roamBases  += (Join-Path $env:USERPROFILE 'AppData\Roaming')
+        $localBases += (Join-Path $env:USERPROFILE 'AppData\Local')
     }
-    throw 'Could not locate the claude executable. Pass -ClaudePath explicitly.'
+    $roots = [System.Collections.Generic.List[string]]::new()
+    foreach ($b in @($roamBases + $localBases)) {
+        if ($b) { $roots.Add((Join-Path $b 'Claude\claude-code')) }
+    }
+    foreach ($b in $localBases) {
+        if (-not $b) { continue }
+        $pkgGlob = Join-Path $b 'Packages\*\LocalCache\Roaming\Claude\claude-code'
+        foreach ($d in (Get-ChildItem -Path $pkgGlob -Directory -ErrorAction SilentlyContinue)) {
+            $roots.Add($d.FullName)
+        }
+    }
+    $uniqueRoots = @($roots | Select-Object -Unique)
+    $best = $null
+    foreach ($root in $uniqueRoots) {
+        if (Test-Path -LiteralPath $root) {
+            $exe = Get-ChildItem -Path $root -Recurse -Filter 'claude.exe' -ErrorAction SilentlyContinue |
+                Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($exe -and ((-not $best) -or ($exe.LastWriteTime -gt $best.LastWriteTime))) { $best = $exe }
+        }
+    }
+    if ($best) { return $best.FullName }
+    throw "Could not locate the claude executable (searched PATH and: $($uniqueRoots -join '; ')). Pass -ClaudePath explicitly."
 }
 
 function Test-SessionBlank {
