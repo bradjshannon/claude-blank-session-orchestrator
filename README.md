@@ -24,8 +24,10 @@ you start using it, so there is always a clean session ready to connect to.
   history preserved) and the next cycle launches a fresh blank replacement.
 - Sessions you close (`/exit`) are pruned from state on the next cycle.
 
-So there is always at least one `blank-...` session you can connect to, and your working
-sessions are never disturbed.
+So there is always at least one `<hostname>-blank-orchestrator-...` session you can connect
+to, and your working sessions are never disturbed. The hostname prefix makes it possible
+to tell sessions apart when connecting from a phone or browser that has multiple machines'
+blank sessions in its list.
 
 ## Requirements
 
@@ -52,7 +54,7 @@ pwsh -File .\install.ps1 -DryRun
 ```
 
 Then open the Claude app, go to Remote Control, and connect to the session named
-`blank-...`.
+`<hostname>-blank-orchestrator-...`.
 
 ## Uninstall
 

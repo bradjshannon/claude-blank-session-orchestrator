@@ -70,7 +70,7 @@ try {
     }
 
     Write-Host ""
-    Write-Host "Done. A session named 'blank-...' should be visible in the Claude app under Remote Control."
+    Write-Host "Done. A session named '$env:COMPUTERNAME-blank-orchestrator-...' should be visible in the Claude app under Remote Control."
 }
 catch {
     Write-Error "Install failed: $($_.Exception.Message)"

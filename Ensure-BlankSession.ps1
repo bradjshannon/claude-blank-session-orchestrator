@@ -159,7 +159,7 @@ try {
         $toSpawn = [Math]::Max(0, $TargetBlank - $blankAvailable.Count)
         for ($i = 0; $i -lt $toSpawn; $i++) {
             $uuid = [guid]::NewGuid().ToString()
-            $name = 'blank-{0:MMdd-HHmmss}-{1}' -f (Get-Date), ($uuid.Substring(0, 4))
+            $name = '{0}-blank-orchestrator-{1:MMdd-HHmmss}-{2}' -f $env:COMPUTERNAME, (Get-Date), ($uuid.Substring(0, 4))
             if ($DryRun) {
                 Write-Log -Message "[DryRun] Would launch blank RC session '$name' (uuid $uuid) in '$WorkingDirectory'."
                 continue

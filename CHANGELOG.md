@@ -4,6 +4,13 @@ All notable changes to this project are documented here. Dates are UTC.
 
 ## [Unreleased]
 
+### Changed
+
+- **Blank session names now include the hostname.** Names changed from
+  `blank-MMdd-HHmmss-XXXX` to `<hostname>-blank-orchestrator-MMdd-HHmmss-XXXX`, so a
+  session is identifiable by its originating machine (and script) when several hosts'
+  sessions are visible in `claude --resume` or the Remote Control session list.
+
 ### Fixed
 
 - **MSIX-packaged Claude installs are now resolved.** When the Claude desktop app is
